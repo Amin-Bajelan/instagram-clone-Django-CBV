@@ -1,0 +1,14 @@
+Django==5.2.3
+#import image to databse
+Pillow
+
+#craete random user, email and  ...
+Faker~=37.4.0
+
+#requirements for restframework
+djangorestframework
+markdown
+django-filter
+
+#documentaion for api
+drf_yasg
