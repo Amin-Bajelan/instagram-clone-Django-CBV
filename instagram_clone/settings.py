@@ -133,5 +133,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = 'accounts.User'
 
 # setup login and logout redirection
-# LOGIN_REDIRECT_URL = '/posts/list-posts/'
+LOGIN_REDIRECT_URL = '/posts/index_post/'
 LOGOUT_REDIRECT_URL = '/'
