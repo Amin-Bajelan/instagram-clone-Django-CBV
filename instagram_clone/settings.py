@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os.path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,8 +38,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'accounts',
     'posts',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -133,5 +134,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = 'accounts.User'
 
 # setup login and logout redirection
-LOGIN_REDIRECT_URL = '/posts/index_post/'
+LOGIN_REDIRECT_URL = '/posts/index/'
 LOGOUT_REDIRECT_URL = '/'
+
+#setup path for store photo
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

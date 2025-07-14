@@ -1,6 +1,9 @@
-from django.shortcuts import render
-from django.views.generic.edit import CreateView
-from .forms import CreateUserForm
+from django.shortcuts import render, redirect
+from django.views.generic.edit import CreateView, FormView, UpdateView
+from .forms import CreateUserForm, EditProfileForm
+from django.utils import timezone
+
+from accounts.models import User, Profile
 
 # Create your views here.
 
@@ -11,3 +14,20 @@ class SignUpView(CreateView):
     form_class = CreateUserForm
     template_name = "registration/signup.html"
     success_url = "/accounts/login/"
+
+
+class EditeProfileView(UpdateView):
+    model = Profile
+    form_class = EditProfileForm
+    template_name = "accounts/edit_profile.html"
+    success_url = "/posts/index/"
+
+    def get_object(self, queryset=None):
+        return Profile.objects.get(user=self.request.user)
+
+    def form_valid(self, form):
+        form.instance.is_complete = True
+        form.instance.date_joined = timezone.now()
+        return super().form_valid(form)
+
+

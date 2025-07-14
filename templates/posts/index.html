@@ -5,6 +5,27 @@
     <title>Index</title>
 </head>
 <body>
+    {% if profile.user_name %}
+        {{ profile.user_name }}
+        <form method="post" action="{% url "edite_profile" %}">
+            {% csrf_token %}
+            <button type="submit">Edite profile</button>
+        </form>
+    {% else %}
+        <form method="post" action="{% url "edite_profile" %}">
+        {% csrf_token %}
+        <h3>You dont complete your profile...</h3>
+        <button type="submit">Edite profile</button>
+        </form>
+    {% endif %}
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+
+    <hr>
+    <br>
+welcome to index
 
 </body>
 </html>

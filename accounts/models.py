@@ -38,8 +38,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 # accounts/models.py
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    user_name = models.CharField(max_length=50, unique=True)
-    profile_pic = models.ImageField(upload_to='profiles/', blank=True, null=True,default='')
+    user_name = models.CharField(max_length=50)
+    profile_pic = models.ImageField(upload_to='profiles/', blank=True, null=True)
     bio = models.TextField(blank=True,max_length=256)
     date_joined = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -48,6 +48,7 @@ class Profile(models.Model):
     following = models.PositiveIntegerField(default=0)
     post_count = models.PositiveIntegerField(default=0)
     is_private = models.BooleanField(default=False)
+    is_complete = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Profile of {self.user.email}"
