@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Show_profile</title>
+</head>
+<body>
+    <a href="{% url "index_post" %}">
+    <button type="submit">Back</button>
+    </a>
+    <br>
+    {% if profile.profile_pic %}
+        <img height="200px" src="{{ profile.profile_pic.url }}" alt="profile">
+    {% else %}
+        <img src="{% static 'profile/images.jpg' %}" alt="default profile">
+    {% endif %}
+
+    {{ profile.user_name }}
+    <br>
+    <h4>number post: {{ profile.post_count }}</h4>
+    <h4>following {{ profile.following }}</h4>
+    <h4>followers {{ profile.followers }}</h4>
+    <h3>Bio: {{ profile.bio }}</h3>
+
+    <form method="post" action="{% url "edite_profile" %}">
+            {% csrf_token %}
+            <button type="submit">Edite profile</button>
+    </form>
+</body>
+</html>

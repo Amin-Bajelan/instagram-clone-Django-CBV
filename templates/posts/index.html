@@ -6,26 +6,44 @@
 </head>
 <body>
     {% if profile.user_name %}
-        {{ profile.user_name }}
-        <form method="post" action="{% url "edite_profile" %}">
-            {% csrf_token %}
-            <button type="submit">Edite profile</button>
-        </form>
+        <h4>username: {{ profile.user_name }}</h4>
     {% else %}
         <form method="post" action="{% url "edite_profile" %}">
         {% csrf_token %}
-        <h3>You dont complete your profile...</h3>
+        <h4>You dont complete your profile...</h4>
         <button type="submit">Edite profile</button>
         </form>
     {% endif %}
+
     <form method="post" action="{% url 'logout' %}">
         {% csrf_token %}
         <button type="submit">Logout</button>
     </form>
 
+    <a href="{% url 'show_profile' %}">
+                <button type="submit">Show Profile</button>
+    </a>
+    <br>
+    <a href="">
+        <button type="submit">Notifications</button>
+    </a>
+    <br>
+    <a href="{% url 'explore_post' %}">
+        <button type="submit">Explore</button>
+    </a>
+
+
     <hr>
     <br>
-welcome to index
+
+    {% for i in posts %}
+        {% if i.user.profile.user_name %}
+        <h3>{{ i.user.profile.user_name }}</h3>
+        {% else %}
+            {{ i.user }}
+        {% endif %}
+        <img height="200px" src="{{ i.image.url }}" alt="">
+    {% endfor %}
 
 </body>
 </html>

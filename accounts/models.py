@@ -51,7 +51,7 @@ class Profile(models.Model):
     is_complete = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Profile of {self.user.email}"
+        return f"{self.user_name}"
 
 
 @receiver(post_save, sender=User)

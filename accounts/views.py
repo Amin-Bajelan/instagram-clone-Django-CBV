@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
-from django.views.generic.edit import CreateView, FormView, UpdateView
+from django.views.generic import CreateView, FormView, UpdateView, TemplateView
 from .forms import CreateUserForm, EditProfileForm
 from django.utils import timezone
 
 from accounts.models import User, Profile
+
 
 # Create your views here.
 
@@ -31,3 +32,11 @@ class EditeProfileView(UpdateView):
         return super().form_valid(form)
 
 
+class ShowProfileView(TemplateView):
+    template_name = "accounts/show_profile.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        profile = Profile.objects.get(user=self.request.user)
+        context['profile'] = profile
+        return context

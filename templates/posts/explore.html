@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Explore</title>
+</head>
+<body>
+    <a href="{% url "index_post" %}">
+        <button type="submit">Back</button>
+    </a>
+    <br>
+    {% for i in posts %}
+        <h3>{{ i.user.profile.user_name }}</h3>
+    {% endfor %}
+</body>
+</html>
