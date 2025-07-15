@@ -43,6 +43,17 @@
             {{ i.user }}
         {% endif %}
         <img height="200px" src="{{ i.image.url }}" alt="">
+        <a href="{% url 'likes_list' i.id %}"><h4>likes: {{ i.likes }}</h4></a>
+        <form method="post" action="{% url 'like_post' i.id %}">
+            {% csrf_token %}
+            <button type="submit">
+                {% if user in i.liked_by.all %}
+                    ❤️ Unlike
+                {% else %}
+                    🤍 Like
+                {% endif %}
+            </button>
+        </form>
     {% endfor %}
 
 </body>

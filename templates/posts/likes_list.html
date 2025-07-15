@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List Likes</title>
+</head>
+<body>
+    <a href="{% url "index_post" %}">
+        <button type="submit">Back</button>
+    </a>
+    <hr>
+        <h3>users who liked this post:</h3>
+    <ul>
+    {% for user in liked_users %}
+        <li style="margin-bottom: 10px;">
+            {% if user.profile.profile_pic %}
+    <img src="{{ user.profile.profile_pic.url }}" alt="profile pic" width="40" height="40" style="border-radius: 50%;">
+{% else %}
+    <img src="{% static 'profile/images.jpg' %}" alt="default profile" width="40" height="40" style="border-radius: 50%;">
+{% endif %}
+            {{ user.profile.user_name }}
+        </li>
+    {% empty %}
+        <li>no user liked this post...</li>
+    {% endfor %}
+</ul>
+</body>
+</html>
