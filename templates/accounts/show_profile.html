@@ -10,13 +10,14 @@
     <button type="submit">Back</button>
     </a>
     <br>
+    <br>
+    {{ profile.user_name }}
+    <br>
     {% if profile.profile_pic %}
         <img height="200px" src="{{ profile.profile_pic.url }}" alt="profile">
     {% else %}
         <img src="{% static 'profile/images.jpg' %}" alt="default profile">
     {% endif %}
-
-    {{ profile.user_name }}
     <br>
     <h4>number post: {{ profile.post_count }}</h4>
     <h4>following {{ profile.following }}</h4>
@@ -27,5 +28,17 @@
             {% csrf_token %}
             <button type="submit">Edite profile</button>
     </form>
+    <hr>
+    <br>
+    {% if post %}
+        {% for i in post %}
+            <img height="200px" src="{{ i.image.url }}">
+    <br>
+            <a href="{% url 'list_comment_delete' i.id %}">comments: {{ i.num_comments }}</a>
+        {% endfor %}
+
+    {% else %}
+        <h4>you dont have post yet...</h4>
+    {% endif %}
 </body>
 </html>

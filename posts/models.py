@@ -8,6 +8,7 @@ class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='posts/', blank=False, null=False)
     likes = models.PositiveIntegerField(default=0)
+    num_comments = models.PositiveIntegerField(default=0)
     liked_by = models.ManyToManyField(User, blank=True, related_name='liked_posts')
     caption = models.TextField(max_length=200, blank=True, null=True)
     date_posted = models.DateTimeField(auto_now_add=True)
@@ -44,11 +45,11 @@ class Notification(models.Model):
 
 
 class Comment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # نویسنده کامنت
-    post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)  # پست مربوطه
-    text = models.TextField(max_length=500)  # متن کامنت
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
+    text = models.TextField(max_length=500)
     date_created = models.DateTimeField(auto_now_add=True)
-    is_active = models.BooleanField(default=True)  # برای حذف منطقی یا فیلتر کردن
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"Comment by {self.user} on {self.post}"

@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView, FormView, UpdateView, TemplateView
+
 from .forms import CreateUserForm, EditProfileForm
 from django.utils import timezone
 
 from accounts.models import User, Profile
+from posts.models import Post
 
 
 # Create your views here.
@@ -18,6 +20,9 @@ class SignUpView(CreateView):
 
 
 class EditeProfileView(UpdateView):
+    """
+    class edit profile login user
+    """
     model = Profile
     form_class = EditProfileForm
     template_name = "accounts/edit_profile.html"
@@ -33,10 +38,15 @@ class EditeProfileView(UpdateView):
 
 
 class ShowProfileView(TemplateView):
+    """
+    class show profile login user
+    """
     template_name = "accounts/show_profile.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         profile = Profile.objects.get(user=self.request.user)
         context['profile'] = profile
+        post = Post.objects.filter(user=self.request.user)
+        context['post'] = post
         return context

@@ -15,14 +15,14 @@
     {% for user in liked_users %}
         <li style="margin-bottom: 10px;">
             {% if user.profile.profile_pic %}
-    <img src="{{ user.profile.profile_pic.url }}" alt="profile pic" width="40" height="40" style="border-radius: 50%;">
-{% else %}
-    <img src="{% static 'profile/images.jpg' %}" alt="default profile" width="40" height="40" style="border-radius: 50%;">
-{% endif %}
+                <img src="{{ user.profile.profile_pic.url }}" alt="profile pic" width="40" height="40" style="border-radius: 50%;">
+            {% else %}
+                <img src="{% static 'profile/images.jpg' %}" alt="default profile" width="40" height="40" style="border-radius: 50%;">
+            {% endif %}
             {{ user.profile.user_name }}
         </li>
     {% empty %}
-        <li>no user liked this post...</li>
+        <li>no user liked this post yet...</li>
     {% endfor %}
 </ul>
 </body>

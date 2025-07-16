@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List Comments</title>
+</head>
+<body>
+    <a href="{% url "index_post" %}">
+        <button type="submit">Back</button>
+    </a>
+    <hr>
+    {% if comments %}
+    {% for i in comments %}
+        {{ i.user.profile.user_name }}
+        <br>
+        {% if i.user.profile.profile_pic %}
+                <img src="{{ i.user.profile.profile_pic.url }}" alt="profile pic" width="40" height="40" style="border-radius: 50%;">
+            {% else %}
+                <img src="{% static 'profile/images.jpg' %}" alt="default profile" width="40" height="40" style="border-radius: 50%;">
+            {% endif %}
+        {{ i.text }}
+    <hr>
+    {% endfor %}
+    {% else %}
+        <h4>you dont have comments yet for this post...</h4>
+    {% endif %}
+
+</body>
+</html>
