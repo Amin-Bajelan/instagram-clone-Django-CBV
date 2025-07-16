@@ -15,5 +15,5 @@ urlpatterns = [
     # url to see list comment for delete
     path('comment/delete/<int:post_id>/', views.ListCommentDeleteView.as_view(), name='list_comment_delete'),
     #url to show list comment for delete
-    path('comment/<int:post_id>/', views.DeleteCommentView.as_view(), name='delete_comment'),
+    path('comment/<int:pk>/remove/', views.DeleteCommentView.as_view(), name='delete_comment')
 ]

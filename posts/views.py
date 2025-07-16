@@ -114,9 +114,13 @@ class ListCommentDeleteView(ListView):
         return comments
 
 
-class DeleteCommentView(DeleteView):
-    model = Comment
-    template_name = 'posts/confirm_delete.html'
-    success_url = '/posts/show_profile'
-
-
+class DeleteCommentView(View):
+    def post(self, request, pk):
+        comment = Comment.objects.get(pk=pk)
+        if comment.user == request.user:
+            post = comment.post
+            comment.delete()
+            if post.num_comments > 0:
+                post.num_comments -= 1
+                post.save()
+        return redirect('show_profile')
