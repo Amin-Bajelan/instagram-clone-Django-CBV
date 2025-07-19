@@ -26,8 +26,13 @@ urlpatterns = [
     path('search/', views.SearchView.as_view(), name='search_post'),
     # url send follow request and message for user
     path('send/follow/<int:pk>/', views.FollowRequestView.as_view(), name='follow_request'),
+    # url accept follow request
+    path('accept/follow/<int:pk>/', views.AcceptFollowView.as_view(), name='accept_follow'),
+    # url unfollow
+    path('unfollow/<int:pk>/', views.UnfollowRequestView.as_view(), name='unfollow'),
     # url delete notification
     path('cancel/notification/<int:pk>/', views.CancelNotificationView.as_view(), name='cancel_follow_request'),
-    #
-
+    # url see list my notification
+    path('show/notifications/', views.ShowNotificationsView.as_view(), name='show_notifications'),
+e
 ]

@@ -6,8 +6,11 @@
     <title>Show Profile</title>
 </head>
 <body>
-
-    <h3>{{ profile.user.username }}</h3>
+        <a href="{% url "index_post" %}">
+    <button type="submit">Back</button>
+    </a>
+        <br>
+    <h3>{{ profile.user_name }}</h3>
 
     {% if profile.profile_pic %}
         <img height="200px" src="{{ profile.profile_pic.url }}" alt="Profile Picture">

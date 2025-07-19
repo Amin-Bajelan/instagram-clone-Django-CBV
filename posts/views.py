@@ -169,7 +169,9 @@ class EditPostView(UpdateView):
 
 
 class SearchView(View):
-    """View to search username"""
+    """
+    View to search username
+    """
 
     def post(self, request):
         input_search = request.POST.get('input_search', '').strip()
@@ -178,6 +180,9 @@ class SearchView(View):
 
 
 class FollowRequestView(View):
+    """
+    a view for create notification follow request
+    """
     def post(self, request, pk):
         user_receiver = get_object_or_404(User, pk=pk)
         user_sender = request.user
@@ -192,6 +197,30 @@ class FollowRequestView(View):
         return redirect(reverse('show_profile_user', args=[user_receiver.id]))
 
 
+class AcceptFollowView(View):
+    """
+    a view to accept a follow request
+    """
+    def post(self, request, pk):
+        notification = Notification.objects.get(pk=pk)
+        notification.is_read = True
+        accept_follow = Follow.objects.create(
+            follower=notification.from_user,
+            following=notification.to_user,
+            date_followed=timezone.now()
+        )
+        obj1 = Profile.objects.get(user=notification.to_user)
+        obj1.followers += 1
+        obj2 = Profile.objects.get(user=notification.from_user)
+        obj2.following += 1
+        notification.save()
+        accept_follow.save()
+        obj1.save()
+        obj2.save()
+        return redirect('/posts/index/')
+
+
+
 class CancelNotificationView(View):
     def post(self, request, pk):
         receiver = get_object_or_404(User, pk=pk)
@@ -203,5 +232,11 @@ class CancelNotificationView(View):
         return redirect(reverse('show_profile_user', args=[pk]))
 
 
-
+class ShowNotificationsView(View):
+    """
+    view to show notifications
+    """
+    def post(self, request):
+        notifications = Notification.objects.filter(to_user=request.user)
+        return render(request, 'posts/show_notifications.html', {'notifications': notifications})
 

@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Notifications</title>
+</head>
+<body>
+    <a href="{% url "index_post" %}">
+    <button type="submit">Back</button>
+    </a>
+    <br>
+    <hr>
+        {% if notifications %}
+            {% for i in notifications %}
+
+                    {% if i.notification_type == 'follow' %}
+                        {% if i.is_read == False %}
+                            {% if i.from_user.profile.profile_pic %}
+                                <img src="{{ i.from_user.profile.profile_pic.url }}" alt="profile pic" width="40" height="40" style="border-radius: 50%;">
+                            {% else %}
+                                <img src="{% static 'profile/images.jpg' %}" alt="default profile" width="40" height="40" style="border-radius: 50%;">
+                            {% endif %}
+                            <h3>You have follow request from: <h4>
+                                                        <a href="{% url 'show_profile_user' i.from_user.profile.id %}">
+                                                          {{ i.from_user.profile.user_name }}
+                                                        </a></h4></h3>
+                            <a href="{% url 'accept_follow' i.id %}"><button>Accept</button></a>
+                        {% endif %}
+                        <hr>
+
+                    {% elif i.notification_type == 'like' %}
+                        {% if i.from_user.profile.profile_pic %}
+                            <img src="{{ i.from_user.profile.profile_pic.url }}" alt="profile pic" width="40" height="40" style="border-radius: 50%;">
+                        {% else %}
+                            <img src="{% static 'profile/images.jpg' %}" alt="default profile" width="40" height="40" style="border-radius: 50%;">
+                        {% endif %}
+                        <h3>User <h4>{{ i.from_user.profile.user_name }} like your post</h4></h3>
+                                <img src="{{ i.post.image }}" alt="profile pic" width="40" height="40" style="border-radius: 50%;">
+
+
+                    {% elif i.notification_type == 'comment' %}
+                        <h3>User <h4>{{ i.from_user.profile.user_name }} set comment on your post</h4></h3>
+                        <img src="{{ i.post.image }}" alt="profile pic" width="40" height="40" style="border-radius: 50%;">
+                    {% endif %}
+
+            {% endfor %}
+        {% else %}
+        <h2>you don't have any notification...</h2>
+        {% endif %}
+</body>
+</html>
