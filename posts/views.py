@@ -1,5 +1,8 @@
+from django.utils import timezone
+
 from django.shortcuts import render, reverse, get_object_or_404, redirect
-from django.views.generic import ListView, TemplateView, View, DeleteView
+from django.urls import reverse_lazy
+from django.views.generic import ListView, TemplateView, View, DeleteView, UpdateView, CreateView
 # models
 from accounts.models import User, Profile
 from posts.models import Post, Follow, Notification, Comment
@@ -38,6 +41,20 @@ class IndexView(TemplateView):
             post.save()
             comment.save()
         return redirect('index_post')
+
+
+class AddPostView(CreateView):
+    """
+    a view for adding new by user post
+    """
+    model = Post
+    fields = ['image', 'caption']
+    template_name = 'posts/add_post.html'
+    success_url = '/show_profile/'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
 
 class ExploreView(ListView):
@@ -115,6 +132,10 @@ class ListCommentDeleteView(ListView):
 
 
 class DeleteCommentView(View):
+    """
+    a simple view to delete a post comment
+    """
+
     def post(self, request, pk):
         comment = Comment.objects.get(pk=pk)
         if comment.user == request.user:
@@ -124,3 +145,63 @@ class DeleteCommentView(View):
                 post.num_comments -= 1
                 post.save()
         return redirect('show_profile')
+
+
+class DeletePostView(DeleteView):
+    """
+    a view to delete a post
+    """
+    model = Post
+    success_url = reverse_lazy('show_profile')
+
+
+class EditPostView(UpdateView):
+    """
+    a view to edit a post
+    """
+    model = Post
+    fields = ['caption']
+    template_name = 'posts/edit_post.html'
+    success_url = reverse_lazy('show_profile')
+
+    def get_queryset(self):
+        return Post.objects.filter(user=self.request.user)
+
+
+class SearchView(View):
+    """View to search username"""
+
+    def post(self, request):
+        input_search = request.POST.get('input_search', '').strip()
+        profile = Profile.objects.filter(user_name__icontains=input_search)
+        return render(request, 'posts/search_result.html', {'profile': profile})
+
+
+class FollowRequestView(View):
+    def post(self, request, pk):
+        user_receiver = get_object_or_404(User, pk=pk)
+        user_sender = request.user
+
+        notification, created = Notification.objects.get_or_create(
+            notification_type='follow',
+            from_user=user_sender,
+            to_user=user_receiver,
+            date_created=timezone.now()
+        )
+
+        return redirect(reverse('show_profile_user', args=[user_receiver.id]))
+
+
+class CancelNotificationView(View):
+    def post(self, request, pk):
+        receiver = get_object_or_404(User, pk=pk)
+        Notification.objects.filter(
+            to_user=receiver,
+            from_user=request.user,
+            notification_type='follow'
+        ).delete()
+        return redirect(reverse('show_profile_user', args=[pk]))
+
+
+
+

@@ -32,9 +32,20 @@
     <br>
     {% if post %}
         {% for i in post %}
-            <img height="200px" src="{{ i.image.url }}">
+
+            <form method="post" action="{% url 'delete_post' i.id %}">
+                {% csrf_token %}
+                <button type="submit">Delete post</button>
+            </form>
+                <br>
+            <a href="{% url 'edit_post' i.id %}" class="btn btn-outline-primary"><button>Edit caption</button></a>
     <br>
+            <img height="200px" src="{{ i.image.url }}">
+                <br>
             <a href="{% url 'list_comment_delete' i.id %}">comments: {{ i.num_comments }}</a>
+                <br>
+            <h4>caption: {{ i.caption }}</h4>
+                <hr>
         {% endfor %}
 
     {% else %}

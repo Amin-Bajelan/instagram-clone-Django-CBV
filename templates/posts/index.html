@@ -24,6 +24,8 @@
                 <button type="submit">Show Profile</button>
     </a>
     <br>
+    <a href="{% url 'add_post' %}" class="btn btn-primary"><button>Add post</button></a>
+    <br>
     <a href="">
         <button type="submit">Notifications</button>
     </a>
@@ -31,37 +33,43 @@
     <a href="{% url 'explore_post' %}">
         <button type="submit">Explore</button>
     </a>
-
+    <form method="post" action="{% url 'search_post' %}">
+        {% csrf_token %}
+        <input type="text" name="input_search" placeholder="search username">
+        <button type="submit">Search</button>
+    </form>
 
     <hr>
     <br>
 
     {% for i in posts %}
-        {% if i.user.profile.user_name %}
-        <h3>{{ i.user.profile.user_name }}</h3>
-        {% else %}
-            {{ i.user }}
-        {% endif %}
-        <img height="200px" src="{{ i.image.url }}" alt="">
-        <a href="{% url 'likes_list' i.id %}"><h4>likes: {{ i.likes }}</h4></a>
-        <form method="post" action="{% url 'like_post' i.id %}">
+        {% if i.user.profile.is_private == False %}
+            {% if i.user.profile.user_name %}
+            <h3>{{ i.user.profile.user_name }}</h3>
+            {% else %}
+                {{ i.user }}
+            {% endif %}
+            <img height="200px" src="{{ i.image.url }}" alt="">
+            <a href="{% url 'likes_list' i.id %}"><h4>likes: {{ i.likes }}</h4></a>
+            <form method="post" action="{% url 'like_post' i.id %}">
+                {% csrf_token %}
+                <button type="submit">
+                    {% if user in i.liked_by.all %}
+                        ❤️ Unlike
+                    {% else %}
+                        🤍 Like
+                    {% endif %}
+                </button>
+            </form>
+        <br>
+        <a href="{% url "list_comment" i.id %}"><h4>comments: {{ i.num_comments }}</h4></a>
+        <form method="post" action="{% url 'index_post' %}">
             {% csrf_token %}
-            <button type="submit">
-                {% if user in i.liked_by.all %}
-                    ❤️ Unlike
-                {% else %}
-                    🤍 Like
-                {% endif %}
-            </button>
+            <input type="hidden" name="post_id" value="{{ i.id }}">
+            <textarea name="text" placeholder="text..."></textarea>
+            <button type="submit">comment</button>
         </form>
-    <br>
-    <a href="{% url "list_comment" i.id %}"><h4>comments: {{ i.num_comments }}</h4></a>
-    <form method="post" action="{% url 'index_post' %}">
-        {% csrf_token %}
-        <input type="hidden" name="post_id" value="{{ i.id }}">
-        <textarea name="text" placeholder="text..."></textarea>
-        <button type="submit">comment</button>
-    </form>
+    {% endif %}
     {% endfor %}
 
 </body>

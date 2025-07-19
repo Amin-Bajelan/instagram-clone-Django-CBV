@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Show Profile</title>
+</head>
+<body>
+
+    <h3>{{ profile.user.username }}</h3>
+
+    {% if profile.profile_pic %}
+        <img height="200px" src="{{ profile.profile_pic.url }}" alt="Profile Picture">
+    {% else %}
+        <img src="{% static 'profile/images.jpg' %}" alt="Default Profile Picture">
+    {% endif %}
+
+    <br>
+    <h4>Posts: {{ profile.post_count }}</h4>
+    <h4>Followers: {{ profile.followers.count }}</h4>
+    <h4>Following: {{ profile.following.count }}</h4>
+    <h4>{{ profile.bio }}</h4>
+    <br>
+
+    {% if request.user == profile.user %}
+        {# If it's the owner, show all posts #}
+        {% for post in profile.user.post_set.all %}
+            <img width="200px" height="200px" src="{{ post.image.url }}" alt="Post">
+            <br>
+        {% endfor %}
+    {% else %}
+        {% if request.user in profile.followers.all %}
+            {# If the user follows this profile, show posts #}
+            {% for post in profile.user.post_set.all %}
+                <img width="200px" height="200px" src="{{ post.image.url }}" alt="Post">
+                <br>
+            {% endfor %}
+        {% else %}
+            {% if profile.is_private %}
+                <h2>This account is private. You need to follow first.</h2>
+
+                {% if follow_requested %}
+                    <form method="post" action="{% url 'cancel_follow_request' profile.user.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Cancel Follow Request</button>
+                    </form>
+                {% else %}
+                    <form method="post" action="{% url 'follow_request' profile.user.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Follow</button>
+                    </form>
+                {% endif %}
+
+            {% else %}
+                {# Public profile, not followed yet — show posts #}
+                {% for post in profile.user.post_set.all %}
+                    <img width="200px" height="200px" src="{{ post.image.url }}" alt="Post">
+                    <br>
+                {% endfor %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+
+</body>
+</html>

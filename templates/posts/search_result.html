@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Result</title>
+</head>
+<body>
+    <h2>Result...</h2>
+    <hr>
+    {% if profile %}
+    {% for i in profile %}
+        <a href="{% url 'show_profile_user' i.id %}">{{ i.user_name }}</a>
+        <br>
+        {% if i.profile_pic %}
+            <img src="{{ i.profile_pic.url }}" alt="profile pic" width="40" height="40" style="border-radius: 50%;">
+        {% else %}
+            <img src="{% static 'profile/images.jpg' %}" alt="default profile" width="40" height="40" style="border-radius: 50%;">
+        {% endif %}
+    <hr>
+    {% endfor %}
+    {% else %}
+        <h3>no result found</h3>
+    {% endif %}
+</body>
+</html>

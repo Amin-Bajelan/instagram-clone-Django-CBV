@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
-from django.views.generic import CreateView, FormView, UpdateView, TemplateView
+from django.shortcuts import get_object_or_404
+from django.views.generic import CreateView, FormView, UpdateView, TemplateView, View
 
 from .forms import CreateUserForm, EditProfileForm
 from django.utils import timezone
 
 from accounts.models import User, Profile
-from posts.models import Post
+from posts.models import Post, Notification
 
 
 # Create your views here.
@@ -41,7 +42,7 @@ class ShowProfileView(TemplateView):
     """
     class show profile login user
     """
-    template_name = "accounts/show_profile.html"
+    template_name = "accounts/show_my_profile.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -50,3 +51,27 @@ class ShowProfileView(TemplateView):
         post = Post.objects.filter(user=self.request.user)
         context['post'] = post
         return context
+
+
+class ShowProfileUserView(View):
+    def get(self, request, pk):
+        profile = get_object_or_404(Profile, pk=pk)
+        user_sender = request.user
+        user_receiver = profile.user
+
+
+        follow_requested = Notification.objects.filter(
+            notification_type='follow',
+            from_user=user_sender,
+            to_user=user_receiver
+        ).exists()
+
+        is_owner = user_sender == user_receiver
+
+        context = {
+            'profile': profile,
+            'follow_requested': follow_requested,
+            'is_owner': is_owner
+        }
+
+        return render(request, 'accounts/show_user_profile.html', context)

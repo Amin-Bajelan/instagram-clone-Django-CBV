@@ -10,4 +10,6 @@ urlpatterns = [
     path('show_profile/', views.ShowProfileView.as_view(), name='show_profile'),
     # url to edit login user profile
     path('edite_profile/',views.EditeProfileView.as_view(),name='edite_profile'),
+    # url show searched profile user
+    path('show_profile/<int:pk>/',views.ShowProfileUserView.as_view(),name='show_profile_user'),
 ]
