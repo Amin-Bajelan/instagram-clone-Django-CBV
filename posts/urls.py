@@ -34,5 +34,9 @@ urlpatterns = [
     path('cancel/notification/<int:pk>/', views.CancelNotificationView.as_view(), name='cancel_follow_request'),
     # url see list my notification
     path('show/notifications/', views.ShowNotificationsView.as_view(), name='show_notifications'),
-e
+    # url show my list comments
+    path('show/my/comments/<int:pk>', views.ShowMyCommentsView.as_view(), name='show_my_comments'),
+    # url delete my account comments
+    path('delete/comment/<int:pk>/', views.DeleteMyCommentView.as_view(), name='delete_my_comment'),
+
 ]

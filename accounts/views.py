@@ -6,7 +6,7 @@ from .forms import CreateUserForm, EditProfileForm
 from django.utils import timezone
 
 from accounts.models import User, Profile
-from posts.models import Post, Notification
+from posts.models import Post, Notification, Follow
 
 
 # Create your views here.
@@ -65,13 +65,15 @@ class ShowProfileUserView(View):
             from_user=user_sender,
             to_user=user_receiver
         ).exists()
+        is_following = Follow.objects.filter(follower=request.user, following=profile.user).exists()
 
         is_owner = user_sender == user_receiver
 
         context = {
             'profile': profile,
             'follow_requested': follow_requested,
-            'is_owner': is_owner
+            'is_owner': is_owner,
+            'is_following': is_following,
         }
 
         return render(request, 'accounts/show_user_profile.html', context)

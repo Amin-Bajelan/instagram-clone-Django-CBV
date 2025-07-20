@@ -25,7 +25,10 @@
                                                         <a href="{% url 'show_profile_user' i.from_user.profile.id %}">
                                                           {{ i.from_user.profile.user_name }}
                                                         </a></h4></h3>
-                            <a href="{% url 'accept_follow' i.id %}"><button>Accept</button></a>
+                            <form method="post" action="{% url 'accept_follow' i.id %}">
+                                {% csrf_token %}
+                                <button type="submit">Accept</button>
+                            </form>
                         {% endif %}
                         <hr>
 

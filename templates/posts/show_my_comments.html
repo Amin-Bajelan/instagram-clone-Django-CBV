@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MY Posts Comments</title>
+</head>
+<body>
+    <form method="post" action="{% url "show_profile"  %}">
+    {% csrf_token %}
+    <button type="submit">Back</button>
+    </form>
+    <hr>
+    {% for i in comments %}
+        {{ i.user.profile.user_name }}
+        {% if i.user.profile.profile_pic %}
+        <img src="{{ i.user.profile.profile_pic.url }}" alt="profile pic" width="40" height="40" style="border-radius: 50%;">
+            {% else %}
+                <img src="{% static 'profile/images.jpg' %}" alt="default profile" width="40" height="40" style="border-radius: 50%;">
+        {% endif %}
+        <h3>Comments: {{ i.text }}</h3>
+        <h5>{{ i.date_created }}</h5>
+        <form method="post" action="{% url 'delete_my_comment' i.id %}">
+            {% csrf_token %}
+            <button type="submit">Delete comment</button>
+        </form>
+
+    <hr>
+    {% endfor %}
+</body>
+</html>

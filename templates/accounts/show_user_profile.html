@@ -20,44 +20,104 @@
 
     <br>
     <h4>Posts: {{ profile.post_count }}</h4>
-    <h4>Followers: {{ profile.followers.count }}</h4>
-    <h4>Following: {{ profile.following.count }}</h4>
+    <h4>Followers: {{ profile.followers }}</h4>
+    <h4>Following: {{ profile.following }}</h4>
     <h4>{{ profile.bio }}</h4>
     <br>
 
     {% if request.user == profile.user %}
         {# If it's the owner, show all posts #}
-        {% for post in profile.user.post_set.all %}
-            <img width="200px" height="200px" src="{{ post.image.url }}" alt="Post">
+        {% for i in profile.user.post_set.all %}
+            <img width="200px" height="200px" src="{{ i.image.url }}" alt="Post">
+            <a href="{% url 'likes_list' i.id %}"><h4>likes: {{ i.likes }}</h4></a>
+            <form method="post" action="{% url 'like_post' i.id %}">
+                {% csrf_token %}
+                <button type="submit">
+                    {% if user in i.liked_by.all %}
+                        ❤️ Unlike
+                    {% else %}
+                        🤍 Like
+                    {% endif %}
+                </button>
+            </form>
+        <br>
+        <a href="{% url "list_comment" i.id %}"><h4>comments: {{ i.num_comments }}</h4></a>
+        <form method="post" action="{% url 'index_post' %}">
+            {% csrf_token %}
+            <input type="hidden" name="post_id" value="{{ i.id }}">
+            <textarea name="text" placeholder="text..."></textarea>
+            <button type="submit">comment</button>
+        </form>
             <br>
         {% endfor %}
     {% else %}
-        {% if request.user in profile.followers.all %}
-            {# If the user follows this profile, show posts #}
-            {% for post in profile.user.post_set.all %}
-                <img width="200px" height="200px" src="{{ post.image.url }}" alt="Post">
-                <br>
-            {% endfor %}
+        {% if is_following %}
+            <form method="post" action="{% url 'unfollow' profile.user.id %}">
+                {% csrf_token %}
+                <button type="submit">Unfollow</button>
+            </form>
+            <br>
+            {% for i in profile.user.post_set.all %}
+            <img width="200px" height="200px" src="{{ i.image.url }}" alt="Post">
+            <a href="{% url 'likes_list' i.id %}"><h4>likes: {{ i.likes }}</h4></a>
+            <form method="post" action="{% url 'like_post' i.id %}">
+                {% csrf_token %}
+                <button type="submit">
+                    {% if user in i.liked_by.all %}
+                        ❤️ Unlike
+                    {% else %}
+                        🤍 Like
+                    {% endif %}
+                </button>
+            </form>
+        <br>
+        <a href="{% url "list_comment" i.id %}"><h4>comments: {{ i.num_comments }}</h4></a>
+        <form method="post" action="{% url 'index_post' %}">
+            {% csrf_token %}
+            <input type="hidden" name="post_id" value="{{ i.id }}">
+            <textarea name="text" placeholder="text..."></textarea>
+            <button type="submit">comment</button>
+        </form>
+            <br>
+        {% endfor %}
         {% else %}
             {% if profile.is_private %}
                 <h2>This account is private. You need to follow first.</h2>
-
                 {% if follow_requested %}
-                    <form method="post" action="{% url 'cancel_follow_request' profile.user.id %}">
-                        {% csrf_token %}
-                        <button type="submit">Cancel Follow Request</button>
-                    </form>
+                        <form method="post" action="{% url 'cancel_follow_request' profile.user.id %}">
+                            {% csrf_token %}
+                            <button type="submit">Cancel Follow Request</button>
+                        </form>
                 {% else %}
-                    <form method="post" action="{% url 'follow_request' profile.user.id %}">
-                        {% csrf_token %}
-                        <button type="submit">Follow</button>
-                    </form>
+                        <form method="post" action="{% url 'follow_request' profile.user.id %}">
+                            {% csrf_token %}
+                            <button type="submit">Follow</button>
+                        </form>
                 {% endif %}
 
             {% else %}
                 {# Public profile, not followed yet — show posts #}
-                {% for post in profile.user.post_set.all %}
-                    <img width="200px" height="200px" src="{{ post.image.url }}" alt="Post">
+                {% for i in profile.user.post_set.all %}
+                    <img width="200px" height="200px" src="{{ i.image.url }}" alt="Post">
+                    <a href="{% url 'likes_list' i.id %}"><h4>likes: {{ i.likes }}</h4></a>
+            <form method="post" action="{% url 'like_post' i.id %}">
+                {% csrf_token %}
+                <button type="submit">
+                    {% if user in i.liked_by.all %}
+                        ❤️ Unlike
+                    {% else %}
+                        🤍 Like
+                    {% endif %}
+                </button>
+            </form>
+        <br>
+        <a href="{% url "list_comment" i.id %}"><h4>comments: {{ i.num_comments }}</h4></a>
+        <form method="post" action="{% url 'index_post' %}">
+            {% csrf_token %}
+            <input type="hidden" name="post_id" value="{{ i.id }}">
+            <textarea name="text" placeholder="text..."></textarea>
+            <button type="submit">comment</button>
+        </form>
                     <br>
                 {% endfor %}
             {% endif %}

@@ -54,6 +54,9 @@ class AddPostView(CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+        user_1 = Profile.objects.get(user=self.request.user)
+        user_1.post_count += 1
+        user_1.save()
         return super().form_valid(form)
 
 
@@ -183,6 +186,7 @@ class FollowRequestView(View):
     """
     a view for create notification follow request
     """
+
     def post(self, request, pk):
         user_receiver = get_object_or_404(User, pk=pk)
         user_sender = request.user
@@ -201,6 +205,7 @@ class AcceptFollowView(View):
     """
     a view to accept a follow request
     """
+
     def post(self, request, pk):
         notification = Notification.objects.get(pk=pk)
         notification.is_read = True
@@ -213,12 +218,29 @@ class AcceptFollowView(View):
         obj1.followers += 1
         obj2 = Profile.objects.get(user=notification.from_user)
         obj2.following += 1
-        notification.save()
+        notification.delete()
+
         accept_follow.save()
         obj1.save()
         obj2.save()
         return redirect('/posts/index/')
 
+
+class UnfollowRequestView(View):
+    """
+    a view to unfollow user
+    """
+
+    def post(self, request, pk):
+        follow = Follow.objects.get(follower=request.user, following=User.objects.get(pk=pk))
+        profile_1 = Profile.objects.get(user=User.objects.get(pk=pk))
+        profile_1.followers -= 1
+        profile_2 = Profile.objects.get(user=request.user)
+        profile_2.following -= 1
+        profile_1.save()
+        profile_2.save()
+        follow.delete()
+        return redirect(reverse('show_profile_user', args=[pk]))
 
 
 class CancelNotificationView(View):
@@ -236,7 +258,32 @@ class ShowNotificationsView(View):
     """
     view to show notifications
     """
+
     def post(self, request):
         notifications = Notification.objects.filter(to_user=request.user)
         return render(request, 'posts/show_notifications.html', {'notifications': notifications})
 
+
+class ShowMyCommentsView(View):
+    """
+    Show all comments related to a specific post for the current user
+    """
+
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        comments = Comment.objects.filter(post=post, user=request.user)  # یا فقط post=post
+        return render(request, 'posts/show_my_comments.html', {'comments': comments})
+
+
+class DeleteMyCommentView(View):
+    """
+    Delete comment my posts
+    """
+    def post(self, request, pk):
+        comment = Comment.objects.get(pk=pk)
+        post = Post.objects.get(id=comment.post.id)
+        post_id = post.id
+        post.num_comments -= 1
+        comment.delete()
+        post.save()
+        return redirect('show_profile')
