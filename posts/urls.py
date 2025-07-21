@@ -1,5 +1,6 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
+
 
 urlpatterns = [
     # url main page posts and set comment for posts
@@ -46,5 +47,8 @@ urlpatterns = [
     path('delete/follower/<int:pk>/', views.DeleteFollowerView.as_view(), name='delete_follower'),
     # url delete following
     path('delete/following/<int:pk>', views.DeleteFollowingView.as_view(), name='delete_following'),
+
+    # a path for api urls.py
+    path('api/v1/', include('posts.api.v1.urls')),
 
 ]

@@ -39,7 +39,7 @@
                         {% else %}
                             <img src="{% static 'profile/images.jpg' %}" alt="default profile" width="40" height="40" style="border-radius: 50%;">
                         {% endif %}
-                        <h3>User <h4>{{ i.from_user.profile.user_name }} like your post</h4></h3>
+                        <h3><h4>User: {{ i.from_user.profile.user_name }} like your post</h4></h3>
                                 <img src="{{ i.post.image.url }}" alt="profile pic" width="70" height="70" style="border-radius: 50%;">
 
                         <hr>

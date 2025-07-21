@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.shortcuts import render, reverse, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, TemplateView, View, DeleteView, UpdateView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 # models
 from accounts.models import User, Profile
 from posts.models import Post, Follow, Notification, Comment
@@ -12,7 +13,7 @@ from .forms import CommentForm
 
 # Create your views here.
 
-class IndexView(TemplateView):
+class IndexView(TemplateView, LoginRequiredMixin):
     """
     main page for instagram clone to show posts and profile and edite profile
     """
@@ -21,8 +22,8 @@ class IndexView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['profile'] = Profile.objects.get(user=self.request.user)
-        context['posts'] = Post.objects.all()
-
+        follower_ids = Follow.objects.filter(follower=self.request.user).values_list('following_id', flat=True)
+        context['posts'] = Post.objects.filter(user__in=follower_ids).order_by('-date_posted')
         return context
 
     """
@@ -43,7 +44,7 @@ class IndexView(TemplateView):
         return redirect('index_post')
 
 
-class AddPostView(CreateView):
+class AddPostView(CreateView, LoginRequiredMixin):
     """
     a view for adding new by user post
     """
@@ -60,7 +61,7 @@ class AddPostView(CreateView):
         return super().form_valid(form)
 
 
-class ExploreView(View):
+class ExploreView(View, LoginRequiredMixin):
     """
     a view for explor filter following and not private account
     """
@@ -75,7 +76,7 @@ class ExploreView(View):
         return render(request, 'posts/explore.html', {'posts': unique_posts})
 
 
-class LikePostView(View):
+class LikePostView(View, LoginRequiredMixin):
     """
     a view to handle liking posts
     """
@@ -102,7 +103,7 @@ class LikePostView(View):
         return redirect('/posts/index/')
 
 
-class ListLikesView(ListView):
+class ListLikesView(ListView, LoginRequiredMixin):
     """
     a view to see list of person liking posts
     """
@@ -116,7 +117,7 @@ class ListLikesView(ListView):
         return post.liked_by.all()
 
 
-class ListCommentView(ListView):
+class ListCommentView(ListView, LoginRequiredMixin):
     """
     view to see list of post comments
     """
@@ -130,7 +131,7 @@ class ListCommentView(ListView):
         return comments
 
 
-class ListCommentDeleteView(ListView):
+class ListCommentDeleteView(ListView, LoginRequiredMixin):
     """
     view to see list of post comments for delete
     """
@@ -144,7 +145,7 @@ class ListCommentDeleteView(ListView):
         return comments
 
 
-class DeleteCommentView(View):
+class DeleteCommentView(View, LoginRequiredMixin):
     """
     a simple view to delete a post comment
     """
@@ -160,7 +161,7 @@ class DeleteCommentView(View):
         return redirect('show_profile')
 
 
-class DeletePostView(DeleteView):
+class DeletePostView(DeleteView, LoginRequiredMixin):
     """
     a view to delete a post
     """
@@ -168,7 +169,7 @@ class DeletePostView(DeleteView):
     success_url = reverse_lazy('show_profile')
 
 
-class EditPostView(UpdateView):
+class EditPostView(UpdateView, LoginRequiredMixin):
     """
     a view to edit a post
     """
@@ -181,7 +182,7 @@ class EditPostView(UpdateView):
         return Post.objects.filter(user=self.request.user)
 
 
-class SearchView(View):
+class SearchView(View, LoginRequiredMixin):
     """
     View to search username
     """
@@ -192,7 +193,7 @@ class SearchView(View):
         return render(request, 'posts/search_result.html', {'profile': profile})
 
 
-class FollowRequestView(View):
+class FollowRequestView(View, LoginRequiredMixin):
     """
     a view for create notification follow request
     """
@@ -211,7 +212,7 @@ class FollowRequestView(View):
         return redirect(reverse('show_profile_user', args=[user_receiver.id]))
 
 
-class AcceptFollowView(View):
+class AcceptFollowView(View, LoginRequiredMixin):
     """
     a view to accept a follow request
     """
@@ -236,7 +237,7 @@ class AcceptFollowView(View):
         return redirect('/posts/index/')
 
 
-class UnfollowRequestView(View):
+class UnfollowRequestView(View, LoginRequiredMixin):
     """
     a view to unfollow user
     """
@@ -253,7 +254,7 @@ class UnfollowRequestView(View):
         return redirect(reverse('show_profile_user', args=[pk]))
 
 
-class CancelNotificationView(View):
+class CancelNotificationView(View, LoginRequiredMixin):
     def post(self, request, pk):
         receiver = get_object_or_404(User, pk=pk)
         Notification.objects.filter(
@@ -264,7 +265,7 @@ class CancelNotificationView(View):
         return redirect(reverse('show_profile_user', args=[pk]))
 
 
-class ShowNotificationsView(View):
+class ShowNotificationsView(View, LoginRequiredMixin):
     """
     view to show notifications
     """
@@ -274,7 +275,7 @@ class ShowNotificationsView(View):
         return render(request, 'posts/show_notifications.html', {'notifications': notifications})
 
 
-class ShowMyCommentsView(View):
+class ShowMyCommentsView(View, LoginRequiredMixin):
     """
     Show all comments related to a specific post for the current user
     """
@@ -285,7 +286,7 @@ class ShowMyCommentsView(View):
         return render(request, 'posts/show_my_comments.html', {'comments': comments})
 
 
-class DeleteMyCommentView(View):
+class DeleteMyCommentView(View, LoginRequiredMixin):
     """
     Delete comment my posts
     """
@@ -300,7 +301,7 @@ class DeleteMyCommentView(View):
         return redirect('show_profile')
 
 
-class ShowMyFollower(View):
+class ShowMyFollower(View, LoginRequiredMixin):
     """
     a view to show my follower profile and delete them
     """
@@ -311,7 +312,7 @@ class ShowMyFollower(View):
         return render(request, 'posts/user_follower.html', {'follow': follower})
 
 
-class ShowFollowingView(View):
+class ShowFollowingView(View, LoginRequiredMixin):
     """
     a view to show my following profile and delete them
     """
@@ -322,7 +323,7 @@ class ShowFollowingView(View):
         return render(request, 'posts/user_following.html', {'follow': follower})
 
 
-class DeleteFollowerView(View):
+class DeleteFollowerView(View, LoginRequiredMixin):
     """
     view for delete follower
     """
@@ -339,7 +340,7 @@ class DeleteFollowerView(View):
         return redirect('show_profile')
 
 
-class DeleteFollowingView(View):
+class DeleteFollowingView(View, LoginRequiredMixin):
     """
     view for delete following
     """

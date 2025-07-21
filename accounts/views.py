@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.views.generic import CreateView, FormView, UpdateView, TemplateView, View
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import CreateUserForm, EditProfileForm
 from django.utils import timezone
@@ -20,7 +21,7 @@ class SignUpView(CreateView):
     success_url = "/accounts/login/"
 
 
-class EditeProfileView(UpdateView):
+class EditeProfileView(UpdateView ,LoginRequiredMixin):
     """
     class edit profile login user
     """
@@ -38,7 +39,7 @@ class EditeProfileView(UpdateView):
         return super().form_valid(form)
 
 
-class ShowProfileView(TemplateView):
+class ShowProfileView(TemplateView ,LoginRequiredMixin):
     """
     class show profile login user
     """
@@ -53,7 +54,7 @@ class ShowProfileView(TemplateView):
         return context
 
 
-class ShowProfileUserView(View):
+class ShowProfileUserView(View, LoginRequiredMixin):
     def get(self, request, pk):
         profile = get_object_or_404(Profile, pk=pk)
         user_sender = request.user
