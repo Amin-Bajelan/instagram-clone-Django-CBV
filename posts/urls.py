@@ -35,8 +35,16 @@ urlpatterns = [
     # url see list my notification
     path('show/notifications/', views.ShowNotificationsView.as_view(), name='show_notifications'),
     # url show my list comments
-    path('show/my/comments/<int:pk>', views.ShowMyCommentsView.as_view(), name='show_my_comments'),
+    path('show/my/comments/<int:pk>/', views.ShowMyCommentsView.as_view(), name='show_my_comments'),
     # url delete my account comments
     path('delete/comment/<int:pk>/', views.DeleteMyCommentView.as_view(), name='delete_my_comment'),
+    # url show list follower
+    path('show/follower/<int:pk>', views.ShowMyFollower.as_view(), name='show_follower'),
+    # url show list following
+    path('show/following/<int:pk>', views.ShowFollowingView.as_view(), name='show_following'),
+    # delete follower
+    path('delete/follower/<int:pk>/', views.DeleteFollowerView.as_view(), name='delete_follower'),
+    # url delete following
+    path('delete/following/<int:pk>', views.DeleteFollowingView.as_view(), name='delete_following'),
 
 ]

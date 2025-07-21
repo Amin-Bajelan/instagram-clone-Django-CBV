@@ -19,9 +19,18 @@
         <img src="{% static 'profile/images.jpg' %}" alt="default profile">
     {% endif %}
     <br>
+
+
     <h4>number post: {{ profile.post_count }}</h4>
-    <h4>followers {{ profile.followers }}</h4>
-    <h4>following {{ profile.following }}</h4>
+    <a href="{% url 'show_follower' profile.user.id %}">
+    <h4>followers  {{ profile.followers }}</h4>
+    </a>
+    <a href="{% url 'show_following' profile.user.id %}">
+                        <h4>following {{ profile.following }}</h4>
+    </a>
+
+
+
 
     <h3>Bio: {{ profile.bio }}</h3>
 

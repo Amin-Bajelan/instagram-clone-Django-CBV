@@ -60,16 +60,19 @@ class AddPostView(CreateView):
         return super().form_valid(form)
 
 
-class ExploreView(ListView):
+class ExploreView(View):
     """
-    a view to show all posts who's not private
+    a view for explor filter following and not private account
     """
-    model = Post
-    template_name = 'posts/explore.html'
-    context_object_name = 'posts'
-
-    def get_queryset(self):
-        return Post.objects.filter(user__profile__is_private=False).order_by('-date_posted')
+    def get(self, request):
+        user = request.user
+        public_users = Profile.objects.filter(is_private=False).values_list('user', flat=True)
+        post_1 = Post.objects.filter(user__in=public_users)
+        followings = Follow.objects.filter(follower=user).values_list('following', flat=True)
+        post_2 = Post.objects.filter(user__in=followings)
+        combined = list(post_1) + list(post_2)
+        unique_posts = {post.id: post for post in combined}.values()
+        return render(request, 'posts/explore.html', {'posts': unique_posts})
 
 
 class LikePostView(View):
@@ -87,7 +90,14 @@ class LikePostView(View):
         else:
             post.liked_by.add(user)
             post.likes += 1
-
+        notification = Notification.objects.create(
+            to_user=post.user,
+            from_user=request.user,
+            notification_type='like',
+            post=post,
+            date_created=timezone.now()
+        )
+        notification.save()
         post.save()
         return redirect('/posts/index/')
 
@@ -279,6 +289,7 @@ class DeleteMyCommentView(View):
     """
     Delete comment my posts
     """
+
     def post(self, request, pk):
         comment = Comment.objects.get(pk=pk)
         post = Post.objects.get(id=comment.post.id)
@@ -286,4 +297,60 @@ class DeleteMyCommentView(View):
         post.num_comments -= 1
         comment.delete()
         post.save()
+        return redirect('show_profile')
+
+
+class ShowMyFollower(View):
+    """
+    a view to show my follower profile and delete them
+    """
+
+    def get(self, request, pk):
+        user = User.objects.get(pk=pk)
+        follower = Follow.objects.filter(following=user)
+        return render(request, 'posts/user_follower.html', {'follow': follower})
+
+
+class ShowFollowingView(View):
+    """
+    a view to show my following profile and delete them
+    """
+
+    def get(self, request, pk):
+        user = User.objects.get(pk=pk)
+        follower = Follow.objects.filter(follower=user)
+        return render(request, 'posts/user_following.html', {'follow': follower})
+
+
+class DeleteFollowerView(View):
+    """
+    view for delete follower
+    """
+
+    def post(self, request, pk):
+        following = Follow.objects.filter(following=request.user, follower=User.objects.get(pk=pk))
+        profile_1 = Profile.objects.get(user=request.user)
+        profile_1.followers -= 1
+        profile_1.save()
+        profile_2 = Profile.objects.get(user=User.objects.get(pk=pk))
+        profile_2.following -= 1
+        profile_2.save()
+        following.delete()
+        return redirect('show_profile')
+
+
+class DeleteFollowingView(View):
+    """
+    view for delete following
+    """
+
+    def post(self, request, pk):
+        follower = Follow.objects.filter(follower=request.user, following=User.objects.get(pk=pk))
+        profile_1 = Profile.objects.get(user=request.user)
+        profile_1.following -= 1
+        profile_1.save()
+        profile_2 = Profile.objects.get(user=User.objects.get(pk=pk))
+        profile_2.followers -= 1
+        profile_2.save()
+        follower.delete()
         return redirect('show_profile')

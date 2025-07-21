@@ -29,6 +29,7 @@
                                 {% csrf_token %}
                                 <button type="submit">Accept</button>
                             </form>
+
                         {% endif %}
                         <hr>
 
@@ -39,12 +40,13 @@
                             <img src="{% static 'profile/images.jpg' %}" alt="default profile" width="40" height="40" style="border-radius: 50%;">
                         {% endif %}
                         <h3>User <h4>{{ i.from_user.profile.user_name }} like your post</h4></h3>
-                                <img src="{{ i.post.image }}" alt="profile pic" width="40" height="40" style="border-radius: 50%;">
+                                <img src="{{ i.post.image.url }}" alt="profile pic" width="70" height="70" style="border-radius: 50%;">
 
-
+                        <hr>
                     {% elif i.notification_type == 'comment' %}
                         <h3>User <h4>{{ i.from_user.profile.user_name }} set comment on your post</h4></h3>
-                        <img src="{{ i.post.image }}" alt="profile pic" width="40" height="40" style="border-radius: 50%;">
+                        <img src="{{ i.post.image.url }}" alt="profile pic" width="40" height="40" style="border-radius: 50%;">
+                        <hr>
                     {% endif %}
 
             {% endfor %}

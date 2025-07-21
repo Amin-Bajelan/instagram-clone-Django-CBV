@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Detail</title>
+</head>
+<body>
+    <a href="{% url 'show_profile'  %}">
+    <button type="button">Back</button>
+    </a>
+    <hr>
+    {% if follow %}
+    {% for i in follow %}
+        {% if i.user.profile.profile_pic %}
+        <img src="{{ i.user.profile.profile_pic.url }}" alt="profile pic" width="40" height="40" style="border-radius: 50%;">
+            {% else %}
+                <img src="{% static 'profile/images.jpg' %}" alt="default profile" width="40" height="40" style="border-radius: 50%;">
+        {% endif %}
+        <h3>username: {{ i.follower.profile.user_name }}</h3>
+        <form method="post" action="{% url 'delete_follower' i.follower.id  %}">
+            {% csrf_token %}
+            <button type="submit">Delete</button>
+        </form>
+    <hr>
+    {% endfor %}
+    {% else %}
+        <h3>You dont have any contact....</h3>
+    {% endif %}
+
+</body>
+</html>

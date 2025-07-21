@@ -20,8 +20,21 @@
 
     <br>
     <h4>Posts: {{ profile.post_count }}</h4>
-    <h4>Followers: {{ profile.followers }}</h4>
-    <h4>Following: {{ profile.following }}</h4>
+        {% if profile.user == request.user %}
+            <a href="{% url 'show_follower' profile.user.id %}">
+                <h4>followers  {{ profile.followers }}</h4>
+            </a>
+        {% else %}
+            <h4>Followers: {{ profile.followers }}</h4>
+        {% endif %}
+        {% if profile.user == request.user %}
+            <a href="{% url 'show_following' profile.user.id %}">
+                <h4>following {{ profile.following }}</h4>
+            </a>
+        {% else %}
+            <h4>Following: {{ profile.following }}</h4>
+        {% endif %}
+
     <h4>{{ profile.bio }}</h4>
     <br>
 
