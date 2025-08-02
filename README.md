@@ -55,6 +55,6 @@
   </ol>
 
   <h2>👨‍💻 Developer</h2>
-  <p>Created by <strong>Mohamad</strong>. For collaboration or inquiries, feel free to reach out or visit the GitHub repository.</p>
+  <p>Created by <strong>Mohamad Amin Bajelan</strong>. For collaboration or inquiries, feel free to reach out or visit the GitHub repository.</p>
 </body>
 </html>
