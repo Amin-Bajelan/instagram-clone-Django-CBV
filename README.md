@@ -54,8 +54,8 @@
     <li>Start server: <code>python manage.py runserver</code></li>
     <h3>And for docker up</h3>
     <li>build docker: <code>docker-compose build</code></li>
-    <li>run container: <code>dokcer-compose up -d</code></li>
-    <li>migrate: <code>dokcer-compose exec backend python manage.py migrate</code></li>
+    <li>run container: <code>docker-compose up -d</code></li>
+    <li>migrate: <code>docker-compose exec backend python manage.py migrate</code></li>
   </ol>
 
   <h2>👨‍💻 Developer</h2>
