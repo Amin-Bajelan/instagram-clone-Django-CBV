@@ -3,12 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Instagram Simulator - Django Project</title>
-  <style>
-    body { font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 30px; line-height: 1.6; direction: ltr; }
-    h1, h2 { color: #34495e; }
-    ul, ol { padding-left: 20px; }
-    code { background-color: #eee; padding: 2px 6px; border-radius: 3px; }
-  </style>
 </head>
 <body>
   <h1>📸 Instagram Simulator</h1>
