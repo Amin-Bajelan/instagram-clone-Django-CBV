@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Instagram Simulator - Django Project</title>
 </head>
 <body>
   <h1>📸 Instagram Simulator</h1>
