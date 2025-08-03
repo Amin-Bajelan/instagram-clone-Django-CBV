@@ -6,7 +6,17 @@
 <body>
   <h1>📸 Instagram Simulator</h1>
   <p>A simplified Instagram-like application built with Django, featuring custom authentication, social features, RESTful APIs, and complete containerization.</p>
-
+  <h2>🚀 Setup Instructions</h2>
+  <ol>
+    <li>Clone repo: <code>git clone [your-repo-link]</code></li>
+    <li>Install packages: <code>pip install -r requirements.txt</code></li>
+    <li>Run migrations: <code>python manage.py migrate</code></li>
+    <li>Start server: <code>python manage.py runserver</code></li>
+    <h3>And for docker up</h3>
+    <li>build docker: <code>docker-compose build</code></li>
+    <li>run container: <code>docker-compose up -d</code></li>
+    <li>migrate: <code>docker-compose exec backend python manage.py migrate</code></li>
+  </ol>
   <h2>🔐 Authentication</h2>
   <ul>
     <li>Custom user model using <strong>email and password</strong></li>
@@ -45,18 +55,6 @@
     <li>Easy setup using <code>docker-compose</code></li>
     <li>Suitable for local development and deployment environments</li>
   </ul>
-
-  <h2>🚀 Setup Instructions</h2>
-  <ol>
-    <li>Clone repo: <code>git clone [your-repo-link]</code></li>
-    <li>Install packages: <code>pip install -r requirements.txt</code></li>
-    <li>Run migrations: <code>python manage.py migrate</code></li>
-    <li>Start server: <code>python manage.py runserver</code></li>
-    <h3>And for docker up</h3>
-    <li>build docker: <code>docker-compose build</code></li>
-    <li>run container: <code>docker-compose up -d</code></li>
-    <li>migrate: <code>docker-compose exec backend python manage.py migrate</code></li>
-  </ol>
 
   <h2>👨‍💻 Developer</h2>
   <p>Created by <strong>Mohamad Amin Bajelan</strong>. For collaboration or inquiries, feel free to reach out or visit the GitHub repository.</p>
