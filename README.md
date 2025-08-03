@@ -42,6 +42,7 @@
 
   <h2>⚙️ Views & APIs</h2>
   <ul>
+    <li>doucumentaction api <strong>Swagger</strong></li> 
     <li>Implemented using <strong>Class-Based Views (CBVs)</strong></li>
     <li>RESTful API features built with <strong>Generic API Views</strong> from Django REST Framework</li>
     <li>Only <strong>admin users</strong> have access to full CRUD operations through the API</li>
